@@ -4,33 +4,96 @@
     "slug": "smac",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./assets/images/logo.png",
     "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/PMCONE2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "userInterfaceStyle": "automatic",
+      "splash": {
+        "image": "./assets/PMCONE2.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
+      "buildNumber": "1",
+      "bundleIdentifier": "com.pmc.one",
+      "runtimeVersion": {
+        "policy": "sdkVersion"
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "Ứng dụng cần truy cập vào máy ảnh của bạn để bạn có thể chụp và tải lên hình đại diện hoặc quét mã QR.",
+        "NSLocationWhenInUseUsageDescription": "Ứng dụng cần truy cập vào vị trí của bạn để cung cấp gợi ý về các địa điểm gần bạn và cải thiện trải nghiệm của bạn."
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "versionCode": 1,
+      "package": "com.pmc.one",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "runtimeVersion": {
+        "policy": "appVersion"
+      },
+      "userInterfaceStyle": "automatic",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static"
     },
     "plugins": [
-      "expo-router"
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Ứng dụng cần truy cập vào máy ảnh của bạn để bạn có thể chụp và tải lên hình đại diện hoặc quét mã QR."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Ứng dụng truy cập vào ảnh của bạn để cho phép bạn chia sẻ chúng với bạn bè của bạn."
+        }
+      ],
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Ứng dụng cần truy cập vào máy ảnh của bạn để quét mã QR và mã vạch."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Ứng dụng cần truy cập vào vị trí của bạn để cung cấp gợi ý về các địa điểm gần bạn và cải thiện trải nghiệm của bạn."
+        }
+      ],
+      "expo-router",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "9b5ff473-371e-4ddf-a765-989f27b14a3c"
+      }
+    },
+    "owner": "buiminh30"
   }
 }
