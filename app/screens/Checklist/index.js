@@ -12,6 +12,7 @@ import ThucHienHangmuc from "./ThucHienHangmuc"
 import ThucHienKhuvuc from "./ThucHienKhuvuc"
 import QRCodeScreen from "./QRCodeScreen"
 import ProfileScreen from "./ProfileScreen"
+import DanhmucHangmuc from "./DanhmucHangmuc"
 
 
 
@@ -28,5 +29,6 @@ module.exports = {
     ThucHienHangmuc,
     ThucHienKhuvuc,
     QRCodeScreen,
-    ProfileScreen
+    ProfileScreen,
+    DanhmucHangmuc
 }

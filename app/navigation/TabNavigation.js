@@ -309,7 +309,7 @@ const TabNavigation = () => {
             })}
           />
 
-          {/* <Stack.Screen
+          <Stack.Screen
              name="Danh mục Hạng mục"
              component={DanhmucHangmuc}
              lazy={false}
@@ -345,7 +345,7 @@ const TabNavigation = () => {
                },
                headerBackTitleVisible: false,
              })}
-           /> */}
+           />
           <Stack.Screen
             name="Danh mục Khu vực"
             component={DanhmucKhuvuc}
