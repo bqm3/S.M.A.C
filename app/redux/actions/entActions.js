@@ -16,7 +16,6 @@ export const ent_khoicv_get = () => {
           },
         });
         const data = response.data.data;
-        console.log('data',data)
         dispatch({
           type: type.SET_ENT_KHOICV_SUCCESS,
           payload: {

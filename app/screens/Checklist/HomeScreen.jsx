@@ -189,7 +189,7 @@ const HomeScreen = ({ navigation }) => {
                 fontSize: adjust(16),
               }}
             >
-              Người Giám sát chỉ thực hiện công việc Check list, Tra cứu và Đổi
+              Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi
               mật khẩu.
             </Text>
             <Text
