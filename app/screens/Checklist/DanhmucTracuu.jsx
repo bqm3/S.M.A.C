@@ -273,62 +273,6 @@ const DanhmucTracuu = () => {
     fetchData(filters);
   }, [page, numberOfItemsPerPage]);
 
-  
-
-  const toggleSwitch = (isEnabled) => {
-    setIsEnabled(!isEnabled);
-    if (isEnabled === false) {
-      setFilters({
-        fromDate: startOfMonth,
-        toDate: endOfMonth,
-        ID_Toanha: null,
-        ID_Khuvuc: null,
-        ID_Tang: null,
-      });
-    }
-  };
-
-  const handleSheetChanges = useCallback((index) => {
-    if (index === -1) {
-      setOpacity(1);
-    } else {
-      setOpacity(0.2);
-    }
-  }, []);
-
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef?.current?.present();
-  }, []);
-
-  const handlePresentModalPress2 = useCallback(() => {
-    bottomSheetModalRef?.current?.present();
-  }, []);
-
-  const handlePresentModalClose = useCallback(() => {
-    setOpacity(1);
-    bottomSheetModalRef?.current?.close();
-  });
-
-  const handlePresentModalClose2 = useCallback(() => {
-    setOpacity(1);
-    bottomSheetModalRef2?.current?.close();
-  });
-
-  const decimalNumber = (number) => {
-    if (number < 10 && number > 0) return `0${number}`;
-    if (number === 0) return `0`;
-    return number;
-  };
-
-  const handleModalShow = (active, op) => {
-    setModalVisible(active);
-    setOpacity(Number(op));
-  };
-
-  React.useEffect(() => {
-    setPage(0);
-  }, [numberOfItemsPerPage]);
-
   const _renderItem = ({ item, index }) => {
     const isExistIndex = newActionCheckList?.find(
       (existingItem) =>
@@ -431,6 +375,60 @@ const DanhmucTracuu = () => {
       </TouchableHighlight>
     );
   };
+
+  const toggleSwitch = (isEnabled) => {
+    setIsEnabled(!isEnabled);
+    if (isEnabled === false) {
+      setFilters({
+        fromDate: startOfMonth,
+        toDate: endOfMonth,
+        ID_Toanha: null,
+        ID_Khuvuc: null,
+        ID_Tang: null,
+      });
+    }
+  };
+
+  const handleSheetChanges = useCallback((index) => {
+    if (index === -1) {
+      setOpacity(1);
+    } else {
+      setOpacity(0.2);
+    }
+  }, []);
+
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef?.current?.present();
+  }, []);
+
+  const handlePresentModalPress2 = useCallback(() => {
+    bottomSheetModalRef?.current?.present();
+  }, []);
+
+  const handlePresentModalClose = useCallback(() => {
+    setOpacity(1);
+    bottomSheetModalRef?.current?.close();
+  });
+
+  const handlePresentModalClose2 = useCallback(() => {
+    setOpacity(1);
+    bottomSheetModalRef2?.current?.close();
+  });
+
+  const decimalNumber = (number) => {
+    if (number < 10 && number > 0) return `0${number}`;
+    if (number === 0) return `0`;
+    return number;
+  };
+
+  const handleModalShow = (active, op) => {
+    setModalVisible(active);
+    setOpacity(Number(op));
+  };
+
+  React.useEffect(() => {
+    setPage(0);
+  }, [numberOfItemsPerPage]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -715,14 +713,14 @@ const DanhmucTracuu = () => {
                   </>
                 ))}
 
-              {/* {userChecklist && userChecklist.Permission === 1 && (
+              {userChecklist && userChecklist.Permission === 1 && (
                 <TouchableOpacity
                   style={[styles.button]}
                   onPress={fetchDataExcel}
                 >
                   <Feather name="save" size={26} color="white" />
                 </TouchableOpacity>
-              )} */}
+              )}
             </View>
 
             <Modal
@@ -896,7 +894,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    // height: SIZES.height * 0.7,
+    height: SIZES.height * 0.7,
     width: SIZES.width * 0.85,
   },
   modalText: {

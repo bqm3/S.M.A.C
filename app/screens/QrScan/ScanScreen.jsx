@@ -32,7 +32,7 @@ import {
 import { BASE_URL_ASSETS } from "../../constants/config";
 
 const ScanScreen = () => {
-  const { step, saveStep } = useContext(ScanContext);
+  const { step, saveStep,phieuNXContext } = useContext(ScanContext);
 
   const { userAsset, authTokenAsset } = useSelector(
     (state) => state.authReducer
@@ -66,10 +66,16 @@ const ScanScreen = () => {
 
   const handleKiemketaisan = async () => {
     try {
+      console.log('phieuNXContext',phieuNXContext)
+      console.log('dataTaiSanDetail', dataTaiSanDetail)
+
       setLoadingSubmit(true);
       const formData = new FormData();
-      formData.append("iTinhtrang", 1);
-      formData.append("Ghichu", note);
+      formData.append("Dongia", dataTaiSanDetail.Giatri);
+      formData.append("Namsx", dataTaiSanDetail.ID_Nam);
+      formData.append("ID_PhieuNX", phieuNXContext.ID_PhieuNX);
+      formData.append("ID_Taisan", dataTaiSanDetail.ID_Taisan);
+      formData.append("ID_TaisanQrCode", dataTaiSanDetail.ID_TaisanQr);
 
       const file = {
         uri:
@@ -84,9 +90,9 @@ const ScanScreen = () => {
       formData.append(`Image`, file);
 
       // debugger;
-      await axios.put(
+      await axios.post(
         BASE_URL_ASSETS +
-          `/tb_taisanqrcode/scan/${dataTaiSanDetail.ID_TaisanQr}`,
+          `/tb_phieunxct/scan`,
         formData,
         {
           headers: {
@@ -229,12 +235,12 @@ const ScanScreen = () => {
                     <Text
                       style={{
                         fontSize: 16,
-                        fontWeight: "500",
+                        fontWeight: "400",
                         paddingTop: 10,
                         textAlign: "center",
                       }}
                     >
-                      Ấn vào Qr để Quét
+                      Ấn vào <Text style={{fontWeight: "800"}}>Qr Code</Text> để <Text style={{fontWeight: "800"}}>Quét</Text>
                     </Text>
                   </View>
                 )}
