@@ -42,11 +42,10 @@ const Back = ({ navigation, title }) => {
 
 const TabNavigation = () => {
   const { step, saveStep } = useContext(ScanContext);
-  console.log("run");
   return (
     <>
       <Stack.Navigator
-        initialRouteName="MultipleScreen"
+        initialRouteName="PhieuNXScreen"
         screenOptions={{
           headerBackTitleVisible: false,
         }}
@@ -75,17 +74,17 @@ const TabNavigation = () => {
                     color: "black",
                   }}
                 >
-                  Quản lý tài sản
+                  Phiếu kiểm kê
                 </Text>
               ),
-              headerLeft: () => (
-                <Ionicons
-                  onPress={() => navigation.goBack()}
-                  name="chevron-back"
-                  size={adjust(24)}
-                  color="black"
-                />
-              ),
+              // headerLeft: () => (
+              //   <Ionicons
+              //     onPress={() => navigation.goBack()}
+              //     name="chevron-back"
+              //     size={adjust(24)}
+              //     color="black"
+              //   />
+              // ),
             })}
           />
           <Stack.Screen
@@ -110,9 +109,11 @@ const TabNavigation = () => {
               ),
               headerLeft: () => (
                 <Ionicons
-                  onPress={() => navigation.goBack()}
+                  onPress={() => {
+                    navigation.goBack()
+                  }}
                   name="chevron-back"
-                  size={adjust(24)}
+                  size={adjust(30)}
                   color="black"
                 />
               ),
@@ -309,7 +310,7 @@ const TabNavigation = () => {
             })}
           />
 
-          <Stack.Screen
+          {/* <Stack.Screen
              name="Danh mục Hạng mục"
              component={DanhmucHangmuc}
              lazy={false}
@@ -345,7 +346,7 @@ const TabNavigation = () => {
                },
                headerBackTitleVisible: false,
              })}
-           />
+           /> */}
           <Stack.Screen
             name="Danh mục Khu vực"
             component={DanhmucKhuvuc}

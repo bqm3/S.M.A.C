@@ -72,6 +72,11 @@ const LoginScreen = ({ navigation }) => {
     } else {
       dispatch(loginChecklist(data?.UserName, data?.Password));
       dispatch(loginAssets(data?.UserName, data?.Password));
+
+      if (isChecked) {
+        await AsyncStorage.setItem("UserName", data?.UserName);
+        await AsyncStorage.setItem("Password", data?.Password);
+      }
     }
   };
 

@@ -9,11 +9,6 @@ const DefaultNavigation = () => {
   return (
     <>
       <Stack.Navigator initialRouteName="OnBoardingScreen">
-      {/* <Stack.Screen
-          options={{ headerShown: false }}
-          name="OnBoardingScreen"
-          component={OnBoardingScreen}
-        /> */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="LoginScreen"

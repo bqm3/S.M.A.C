@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/theme";
+import adjust from "../../constants/adjust";
 
 const VerticalSelect = ({ value, label, selectedItem }) => {
   const isChecked = value === selectedItem;
@@ -33,7 +34,7 @@ export default VerticalSelect;
 
 const styles = StyleSheet.create({
   customSelect: {
-    fontSize: 15,
+    fontSize: adjust(15),
     fontWeight: 700,
     color: "#637381",
     paddingHorizontal: 4,

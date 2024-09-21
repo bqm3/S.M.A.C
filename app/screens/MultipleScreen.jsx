@@ -111,7 +111,7 @@ const MultipleScreen = ({ navigation }) => {
                       </TouchableOpacity>
                     </View>
 
-                    {/* <View style={styles.item}>
+                    <View style={styles.item}>
                       <TouchableOpacity
                         style={styles.itemContent}
                         onPress={() => navigation.navigate("PhieuNXScreen")}
@@ -165,7 +165,7 @@ const MultipleScreen = ({ navigation }) => {
                           {"Scan Qr"}
                         </Text>
                       </TouchableOpacity>
-                    </View> */}
+                    </View>
                   </View>
                 </View>
 
