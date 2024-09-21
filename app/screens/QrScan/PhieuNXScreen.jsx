@@ -145,7 +145,7 @@ const ScanScreen = ({ navigation }) => {
           const dataNoiNhap = data?.filter((item) => item.Thuoc === "PMC");
           setPhongBanDA(dataNoiNhap);
         })
-        .catch((err) => console.log("err", err));
+        .catch((err) => console.log("err1", err));
     };
     resDataPhongbanda();
   }, []);
@@ -169,7 +169,7 @@ const ScanScreen = ({ navigation }) => {
           setPhieuNX(data);
         })
         .catch((err) => {
-          console.log("err", err.response);
+          console.log("err2", err.response);
         });
     };
 

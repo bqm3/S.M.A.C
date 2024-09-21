@@ -66,9 +66,6 @@ const ScanScreen = () => {
 
   const handleKiemketaisan = async () => {
     try {
-      console.log('phieuNXContext',phieuNXContext)
-      console.log('dataTaiSanDetail', dataTaiSanDetail)
-
       setLoadingSubmit(true);
       const formData = new FormData();
       formData.append("Dongia", dataTaiSanDetail.Giatri);
@@ -417,7 +414,7 @@ const ScanScreen = () => {
                               Phòng ban
                             </Text>
                             <Text>:</Text>
-                            <Text style={{ flexShrink: 1 }}>
+                            <Text style={{ flexShrink: 1, }}>
                               {" "}
                               {dataTaiSanDetail?.ent_phongbanda?.Tenphongban} (
                               {
