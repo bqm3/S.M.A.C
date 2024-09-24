@@ -16,8 +16,7 @@ import {
   ProfileScreen,
 } from "../screens/Checklist";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import LoginScreen from "../screens/LoginScreen";
+import { Ionicons, FontAwesome5, AntDesign } from "@expo/vector-icons";
 import ScanScreen from "../screens/QrScan/ScanScreen";
 import MultipleScreen from "../screens/MultipleScreen";
 import { COLORS } from "../constants/theme";
@@ -25,6 +24,7 @@ import adjust from "../constants/adjust";
 import { Image, Button, Text, TouchableOpacity, Platform } from "react-native";
 import ScanContext from "../context/ScanContext";
 import PhieuNXScreen from "../screens/QrScan/PhieuNXScreen";
+import { logoutAction } from "../redux/actions/authActions";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,10 +42,15 @@ const Back = ({ navigation, title }) => {
 
 const TabNavigation = () => {
   const { step, saveStep } = useContext(ScanContext);
+  const { authTokenAsset, userAsset, authTokenChecklist, userChecklist } =
+    useSelector((state) => state.authReducer);
+  const dispatch = useDispatch();
   return (
     <>
       <Stack.Navigator
-        initialRouteName="PhieuNXScreen"
+        initialRouteName={
+          userAsset.ID_User == 2 ? "PhieuNXScreen" : "MultipleScreen"
+        }
         screenOptions={{
           headerBackTitleVisible: false,
         }}
@@ -77,14 +82,14 @@ const TabNavigation = () => {
                   Phiếu kiểm kê
                 </Text>
               ),
-              // headerLeft: () => (
-              //   <Ionicons
-              //     onPress={() => navigation.goBack()}
-              //     name="chevron-back"
-              //     size={adjust(24)}
-              //     color="black"
-              //   />
-              // ),
+              headerRight: () => (
+                <AntDesign
+                  name="logout"
+                  size={24}
+                  color="black"
+                  onPress={() => dispatch(logoutAction())}
+                />
+              ),
             })}
           />
           <Stack.Screen
@@ -110,7 +115,7 @@ const TabNavigation = () => {
               headerLeft: () => (
                 <Ionicons
                   onPress={() => {
-                    navigation.goBack()
+                    navigation.goBack();
                   }}
                   name="chevron-back"
                   size={adjust(30)}
