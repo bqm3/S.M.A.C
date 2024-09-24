@@ -23,7 +23,7 @@
         "backgroundColor": "#ffffff"
       },
       "buildNumber": "1",
-      "bundleIdentifier": "com.pmc.one",
+      "bundleIdentifier": "com.pmc.smac",
       "runtimeVersion": {
         "policy": "sdkVersion"
       },
@@ -38,7 +38,7 @@
         "backgroundColor": "#ffffff"
       },
       "versionCode": 1,
-      "package": "com.pmc.one",
+      "package": "com.pmc.smac",
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",

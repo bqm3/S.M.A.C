@@ -42,9 +42,7 @@
         "ascAppId": "6449212239",
         "appleTeamId": "79SFQ338H9"
       },
-      "android": {
-        "serviceAccountKeyPath": "./pmc-one-a867570122a2.json"
-      }
+     
       
     }
   }

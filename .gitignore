@@ -21,3 +21,5 @@ expo-env.d.ts
 
 pmc-one-a867570122a2.json
 google-services.json
+app.json
+eas.json
