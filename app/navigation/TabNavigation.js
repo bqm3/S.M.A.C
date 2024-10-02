@@ -107,16 +107,16 @@ const TabNavigation = () => {
                   Quản lý tài sản
                 </Text>
               ),
-              headerLeft: () => (
-                <Ionicons
-                  onPress={() => {
-                    navigation.goBack()
-                  }}
-                  name="chevron-back"
-                  size={adjust(30)}
-                  color="black"
-                />
-              ),
+              // headerLeft: () => (
+              //   <Ionicons
+              //     onPress={() => {
+              //       navigation.goBack()
+              //     }}
+              //     name="chevron-back"
+              //     size={adjust(30)}
+              //     color="black"
+              //   />
+              // ),
             })}
           />
         </Stack.Group>
