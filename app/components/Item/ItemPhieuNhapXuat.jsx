@@ -88,6 +88,78 @@ export default function ItemPhieuNhapXuat({
                 { color: isExistIndex ? "black" : "white" },
               ]}
             >
+              Phòng ban
+            </Text>
+          </View>
+          <View style={{ width: 200 }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+              ]}
+            >
+              : {item?.NoiNhap?.Tenphongban}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.row}>
+          <View style={{ width: 150 }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { color: isExistIndex ? "black" : "white" },
+              ]}
+            >
+              Loại nhóm
+            </Text>
+          </View>
+          <View style={{ width: 200 }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+              ]}
+            >
+              : {item?.ent_loainhom?.Loainhom}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.row}>
+          <View style={{ width: 150 }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { color: isExistIndex ? "black" : "white" },
+              ]}
+            >
+              Quý
+            </Text>
+          </View>
+          <View style={{ width: 200 }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+              ]}
+            >
+              : {item?.ent_quy?.Quy}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.row}>
+          <View style={{ width: 150 }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { color: isExistIndex ? "black" : "white" },
+              ]}
+            >
               Ngày nhập
             </Text>
           </View>
@@ -122,6 +194,31 @@ export default function ItemPhieuNhapXuat({
           >
             : {item?.ent_user?.Hoten}
           </Text>
+        </View>
+        <View style={styles.row}>
+          <View style={{ width: 150 }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { color: isExistIndex ? "black" : "white" },
+              ]}
+            >
+              Ghi chú
+            </Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap" }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+              ]}
+              numberOfLines={3}
+            >
+              {`: ${item?.Ghichu}`}
+            </Text>
+          </View>
         </View>
         <View style={styles.row}>
           <View style={{ width: 150 }}>

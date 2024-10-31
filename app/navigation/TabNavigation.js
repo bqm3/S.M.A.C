@@ -24,6 +24,7 @@ import { COLORS } from "../constants/theme";
 import adjust from "../constants/adjust";
 import { Image, Button, Text, TouchableOpacity, Platform } from "react-native";
 import ScanContext from "../context/ScanContext";
+import AppContext from "../context/AppContext";
 import PhieuNXScreen from "../screens/QrScan/PhieuNXScreen";
 
 const Stack = createNativeStackNavigator();
@@ -42,6 +43,7 @@ const Back = ({ navigation, title }) => {
 
 const TabNavigation = () => {
   const { step, saveStep } = useContext(ScanContext);
+  const { isCreate, setIsCreate } = useContext(AppContext);
   return (
     <>
       <Stack.Navigator
@@ -77,14 +79,18 @@ const TabNavigation = () => {
                   Phiếu kiểm kê
                 </Text>
               ),
-              // headerLeft: () => (
-              //   <Ionicons
-              //     onPress={() => navigation.goBack()}
-              //     name="chevron-back"
-              //     size={adjust(24)}
-              //     color="black"
-              //   />
-              // ),
+              headerLeft: () => (
+                isCreate ? (
+                  <Ionicons
+                    onPress={() => {
+                      setIsCreate(false);
+                    }}
+                    name="chevron-back"
+                    size={24}
+                    color="black"
+                  />
+                ) : null
+              ),
             })}
           />
           <Stack.Screen
