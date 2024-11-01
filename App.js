@@ -2,6 +2,7 @@ import React from "react";
 import { StatusBar, View, Text, TouchableOpacity } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { store } from "./app/redux/store";
 import { ThemeProvider } from "./app/context/ThemeContext";
 import CheckNavigation from "./app/navigation/CheckNavigation";
@@ -23,10 +24,12 @@ export default function App() {
             <ScanProvider>
               <DataProvider>
                 <ChecklistProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
                   <NavigationContainer>
                     <StatusBar />
                     <CheckNavigation />
                   </NavigationContainer>
+                  </GestureHandlerRootView>
                 </ChecklistProvider>
               </DataProvider>
             </ScanProvider>
