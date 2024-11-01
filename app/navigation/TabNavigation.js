@@ -23,6 +23,7 @@ import { COLORS } from "../constants/theme";
 import adjust from "../constants/adjust";
 import { Image, Button, Text, TouchableOpacity, Platform } from "react-native";
 import ScanContext from "../context/ScanContext";
+import AppContext from "../context/AppContext";
 import PhieuNXScreen from "../screens/QrScan/PhieuNXScreen";
 import { logoutAction } from "../redux/actions/authActions";
 
@@ -42,6 +43,7 @@ const Back = ({ navigation, title }) => {
 
 const TabNavigation = () => {
   const { step, saveStep } = useContext(ScanContext);
+  const { isCreate, setIsCreate } = useContext(AppContext);
   const { authTokenAsset, userAsset, authTokenChecklist, userChecklist } =
     useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
@@ -82,14 +84,17 @@ const TabNavigation = () => {
                   Phiếu kiểm kê
                 </Text>
               ),
-              headerRight: () => (
-                <AntDesign
-                  name="logout"
-                  size={24}
-                  color="black"
-                  onPress={() => dispatch(logoutAction())}
-                />
-              ),
+              headerLeft: () => (
+                isCreate ? (
+                  <Ionicons
+                    onPress={() => {
+                      setIsCreate(false);
+                    }}
+                    name="chevron-back"
+                    size={24}
+                    color="black"
+                  />
+                ) : null
             })}
           />
           <Stack.Screen
@@ -112,17 +117,6 @@ const TabNavigation = () => {
                   Quản lý tài sản
                 </Text>
               ),
-              headerLeft: () => (
-                <Ionicons
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                  name="chevron-back"
-                  size={adjust(30)}
-                  color="black"
-                />
-              ),
-            })}
           />
         </Stack.Group>
         <Stack.Group>

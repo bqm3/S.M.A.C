@@ -25,6 +25,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import adjust from "../../constants/adjust";
 import axios from "axios";
 import ScanContext from "../../context/ScanContext";
+import AppContext from "../../context/AppContext";
 import VerticalSelect from "../../components/Vertical/VerticalSelect";
 import { FontAwesome, AntDesign, Feather, Entypo } from "@expo/vector-icons";
 import { BASE_URL_ASSETS } from "../../constants/config";
@@ -38,23 +39,16 @@ import {
   Toast,
 } from "react-native-alert-notification";
 
-const dataQuy = [
-  {
-    value: "1",
-    label: "Quý I",
-  },
-  {
-    value: "2",
-    label: "Quý II",
-  },
-  {
-    value: "3",
-    label: "Quý III",
-  },
-  {
-    value: "4",
-    label: "Quý IV",
-  },
+const QUARTYFILTER = [
+  { value: 1, label: "Quý I" },
+  { value: 4, label: "Quý IV" },
+];
+
+const dataLoaiNhom = [
+  { value: 1, label: "Tài sản cố định" },
+  { value: 2, label: "Công cụ, dụng cụ" },
+  { value: 3, label: "Vật tư thay thế" },
+  { value: 4, label: "Đồng phục" },
 ];
 
 function getQuarter(month) {
@@ -72,6 +66,7 @@ function getQuarter(month) {
 }
 
 const ScanScreen = ({ navigation }) => {
+  
   const { userAsset, authTokenAsset } = useSelector(
     (state) => state.authReducer
   );
@@ -79,15 +74,24 @@ const ScanScreen = ({ navigation }) => {
   const { step, saveStep, setPhieuNXContext, phieuNXContext } =
     useContext(ScanContext);
 
+  const { isCreate, setIsCreate } = useContext(AppContext);
+
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1;
 
   const height = useHeaderHeight();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [isShowCreate, setIsShowCreate] = useState(true);
 
-  const [taisanQr, setTaiSanQr] = useState([]);
+  //const [taisanQr, setTaiSanQr] = useState([]);
 
+  const [dataQuy, setDataQuy] = useState([
+    { value: 1, label: "Quý I" },
+    { value: 2, label: "Quý II" },
+    { value: 3, label: "Quý III" },
+    { value: 4, label: "Quý IV" },
+  ]);
   const [defaultQuy, setDefaultQuy] = useState(null);
   const [defaultPB, setDefaultPB] = useState(null);
 
@@ -102,6 +106,7 @@ const ScanScreen = ({ navigation }) => {
     ID_Quy: null,
     Sophieu: null,
     Ghichu: "",
+    ID_Loainhom: null,
   });
 
   const handleChangeText = (key, value) => {
@@ -121,20 +126,33 @@ const ScanScreen = ({ navigation }) => {
     setDatePickerVisibility(!isDatePickerVisible);
   };
 
-  useEffect(() => {
-    async function fetchDataTaiSan() {
-      setLoading(true);
-      const res = await axios.get(BASE_URL_ASSETS + "/tb_taisanqrcode/all");
-      if (res.status == 200) {
-        setTaiSanQr(res.data.data);
-        setLoading(false);
-      } else {
-        setTaiSanQr([]);
-        setLoading(false);
-      }
+  const handleLoaiNhomSelect = (selectedItem) => {
+    if (selectedItem.value === 1) {
+      setDataQuy(QUARTYFILTER);
+    } else {
+      setDataQuy([
+        { value: 1, label: "Quý I" },
+        { value: 2, label: "Quý II" },
+        { value: 3, label: "Quý III" },
+        { value: 4, label: "Quý IV" },
+      ]);
     }
-    fetchDataTaiSan();
-  }, []);
+  };
+
+  // useEffect(() => {
+  //   async function fetchDataTaiSan() {
+  //     setLoading(true);
+  //     const res = await axios.get(BASE_URL_ASSETS + "/tb_taisanqrcode/all");
+  //     if (res.status == 200) {
+  //       setTaiSanQr(res.data.data);
+  //       setLoading(false);
+  //     } else {
+  //       setTaiSanQr([]);
+  //       setLoading(false);
+  //     }
+  //   }
+  //   fetchDataTaiSan();
+  // }, []);
 
   useEffect(() => {
     const resDataPhongbanda = async () => {
@@ -151,30 +169,8 @@ const ScanScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    const currentQuarter = getQuarter(currentMonth);
-    const res = async () => {
-      await axios
-        .get(
-          BASE_URL_ASSETS + `/tb_phieunx/kiemke/${currentQuarter}`,
-
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: "Bearer " + authTokenAsset,
-            },
-          }
-        )
-        .then((res) => {
-          const data = res.data.data;
-          setPhieuNX(data);
-        })
-        .catch((err) => {
-          console.log("err2", err.response);
-        });
-    };
-
-    res();
-  }, [currentMonth]);
+    fetchPhieuNX();
+  }, []);
 
   useEffect(() => {
     const defaultPB = phongBanDA?.find(
@@ -198,9 +194,11 @@ const ScanScreen = ({ navigation }) => {
       setNewActionQuanlyTaisan((prevArray) =>
         prevArray.filter((_, index) => index !== isExistIndex)
       );
+      setIsShowCreate(true)
     } else {
       // Nếu item chưa tồn tại, thêm vào mảng mới
       setNewActionQuanlyTaisan([item]);
+      setIsShowCreate(false)
     }
   };
 
@@ -242,7 +240,6 @@ const ScanScreen = ({ navigation }) => {
         );
       })
       .catch((error) => {
-        
         Toast.show({
           type: ALERT_TYPE.DANGER,
           title: "S.M.A.C ",
@@ -251,8 +248,28 @@ const ScanScreen = ({ navigation }) => {
       });
   };
 
+  const fetchPhieuNX = async () => {
+    setLoading(true)
+    try {
+      const res = await axios.get(
+        BASE_URL_ASSETS + `/tb_phieunx/kiemke/phongban`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authTokenAsset}`,
+          },
+        }
+      );
+      setPhieuNX(res.data.data);
+      setIsCreate(false);
+      setNewActionQuanlyTaisan([])
+      setLoading(false)
+    } catch (error) {
+      console.log("Error fetching inventory data:", error.response);
+    }
+  };
+
   const handlePushDataSave = async () => {
-   
     if (!dataInput.ID_Phongban || !dataInput.ID_Quy || !dataInput.Sophieu) {
       Toast.show({
         type: ALERT_TYPE.WARNING,
@@ -263,41 +280,40 @@ const ScanScreen = ({ navigation }) => {
     } else {
       setLoadingSubmit(true);
       const data = {
-        ID_Nghiepvu: 7,
+        ID_Nghiepvu: 9,
         ID_NoiNhap: dataInput.ID_Phongban,
         ID_NoiXuat: dataInput.ID_Phongban,
         NgayNX: dataInput.NgayNX,
         ID_Quy: dataInput.ID_Quy,
         Sophieu: dataInput.Sophieu,
         Ghichu: dataInput.Ghichu || "",
+        ID_Loainhom: dataInput.ID_Loainhom,
       };
-      await axios
-        .post(BASE_URL_ASSETS + `/tb_phieunx/create`, data, {
+      try {
+        await axios.post(BASE_URL_ASSETS + `/tb_phieunx/create`, data, {
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${authTokenAsset}`,
           },
-        })
-        .then((res) => {
-          Toast.show({
-            type: ALERT_TYPE.SUCCESS,
-            title: "S.M.A.C ",
-            textBody: "Tạo phiếu kiểm kê thành công",
-            autoClose: 2000,
-          });
-          setLoadingSubmit(false);
-          setPhieuNX([res.data.data]);
-         
-        })
-        .catch((error) => {
-          console.log('err', error)
-          setLoadingSubmit(false);
-          Toast.show({
-            type: ALERT_TYPE.DANGER,
-            title: "S.M.A.C ",
-            textBody: "Tạo phiếu kiểm kê thất bại",
-          });
         });
+
+        Toast.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: "S.M.A.C",
+          textBody: "Tạo phiếu kiểm kê thành công",
+          autoClose: 2000,
+        });
+
+        await fetchPhieuNX();
+      } catch (error) {
+        console.log("Error creating inventory record:", error);
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "S.M.A.C",
+          textBody: "Tạo phiếu kiểm kê thất bại",
+          autoClose: 2000,
+        });
+      }
     }
   };
 
@@ -340,274 +356,363 @@ const ScanScreen = ({ navigation }) => {
                 </>
               ) : (
                 <>
-                  {phieuNX && phieuNX.length > 0 ? (
-                    <FlatList
-                      horizontal={false}
-                      contentContainerStyle={{ flexGrow: 1 }}
-                      style={{ marginVertical: 10 }}
-                      data={phieuNX}
-                      renderItem={({ item, index }) => (
-                        <ItemPhieuNhapXuat
-                          key={index}
-                          item={item}
-                          toggleTodo={toggleTodo}
-                          newActionQuanlyTaisan={newActionQuanlyTaisan}
-                        />
-                      )}
-                      keyExtractor={(item, index) => index.toString()}
-                      scrollEventThrottle={16}
-                      scrollEnabled={true}
-                    />
-                  ) : (
-                    <View style={{ margin: 20 }}>
-                      <View
-                        style={{
-                          justifyContent: "space-around",
-                          width: "100%",
-                        }}
-                      >
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Phòng ban dự án
-                        </Text>
-
-                        <SelectDropdown
-                          data={phongBanDA ? phongBanDA : []}
-                          buttonStyle={styles.select}
-                          dropdownStyle={{
-                            borderRadius: 8,
-                            maxHeight: 400,
-                          }}
-                          // rowStyle={{ height: adjust(50), justifyContent: "center" }}
-                          defaultButtonText={"Nơi nhập xuất"}
-                          buttonTextStyle={styles.customText}
-                          defaultValue={defaultPB}
-                          onSelect={(selectedItem, index) => {
-                            handleChangeText(
-                              "ID_Phongban",
-                              selectedItem.ID_Phongban
-                            );
-                          }}
-                          renderDropdownIcon={(isOpened) => {
-                            return (
-                              <FontAwesome
-                                name={isOpened ? "chevron-up" : "chevron-down"}
-                                color={"#637381"}
-                                size={14}
-                                style={{ marginRight: 10 }}
-                              />
-                            );
-                          }}
-                          dropdownIconPosition={"right"}
-                          buttonTextAfterSelection={(selectedItem, index) => {
-                            return (
-                              <View
-                                style={{
-                                  justifyContent: "center",
-                                  alignContent: "center",
-                                  height: adjust(50),
-                                }}
-                              >
-                                <Text
-                                  allowFontScaling={false}
-                                  style={styles.text}
-                                >
-                                  {selectedItem?.Tenphongban}
-                                </Text>
-                              </View>
-                            );
-                          }}
-                          renderCustomizedRowChild={(item, index) => {
-                            return (
-                              <VerticalSelect
-                                value={item.ID_Phongban}
-                                label={item.Tenphongban}
-                                key={index}
-                                selectedItem={phongBanDA}
-                              />
-                            );
-                          }}
-                        />
-                      </View>
-                      <View
-                        style={{
+                  {isCreate == false && (
+                    <>
+                    {isShowCreate == true && (
+                      <TouchableOpacity
+                      style={[
+                        styles.buttonPlus,
+                        {
+                          position: "absolute",
+                          zIndex: 1,
+                          right: 16,
+                          bottom: 16,
                           flexDirection: "row",
-                          width: "100%",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View style={{ width: "48%" }}>
-                          <Text allowFontScaling={false} style={styles.text}>
-                            Ngày nhập xuất
-                          </Text>
-                          <TouchableOpacity onPress={toggleDatePicker}>
-                            <View style={styles.action}>
-                              <TextInput
-                                allowFontScaling={false}
-                                value={dataInput.NgayNX}
-                                placeholder="Ngày nhập xuất"
-                                placeholderTextColor="gray"
-                                style={{
-                                  paddingLeft: 12,
-                                  color: "#05375a",
-                                  width: "70%",
-                                  fontSize: 16,
-                                  height: 48,
-                                }}
-                                pointerEvents="none"
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: 8,
+                        },
+                      ]}
+                      onPress={() => setIsCreate(true)}
+                    >
+                      <Entypo name="plus" size={adjust(20)} color="white" />
+                    </TouchableOpacity>
+                    )}
+                      {phieuNX && phieuNX.length > 0 ? (
+                        <>
+                          <FlatList
+                            horizontal={false}
+                            contentContainerStyle={{ flexGrow: 1 }}
+                            style={{ marginVertical: 10 }}
+                            data={phieuNX}
+                            renderItem={({ item, index }) => (
+                              <ItemPhieuNhapXuat
+                                key={index}
+                                item={item}
+                                toggleTodo={toggleTodo}
+                                newActionQuanlyTaisan={newActionQuanlyTaisan}
                               />
-                              <TouchableOpacity
-                                onPress={toggleDatePicker}
-                                style={{
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  height: 48,
-                                  width: 48,
-                                }}
-                              >
-                                <AntDesign
-                                  name="calendar"
-                                  size={24}
-                                  color="black"
-                                />
-                              </TouchableOpacity>
-                            </View>
-                            <DateTimePickerModal
-                              isVisible={isDatePickerVisible}
-                              mode="date"
-                              isDarkModeEnabled={true}
-                              onConfirm={(date) => handleConfirm("NgayNX", date)}
-                              onCancel={toggleDatePicker}
-                            />
-                          </TouchableOpacity>
-                        </View>
-                        <View style={{ width: "48%" }}>
-                          <Text allowFontScaling={false} style={styles.text}>
-                            Quý
-                          </Text>
-
-                          <SelectDropdown
-                            data={dataQuy ? dataQuy : []}
-                            buttonStyle={styles.select}
-                            dropdownStyle={{
-                              borderRadius: 8,
-                              maxHeight: 400,
-                            }}
-                            // rowStyle={{ height: 50, justifyContent: "center" }}
-                            defaultButtonText={"Chọn quý"}
-                            buttonTextStyle={styles.customText}
-                            defaultValue={defaultQuy}
-                            onSelect={(selectedItem, index) => {
-                              handleChangeText("ID_Quy", selectedItem.value);
-                            }}
-                            renderDropdownIcon={(isOpened) => {
-                              return (
-                                <FontAwesome
-                                  name={
-                                    isOpened ? "chevron-up" : "chevron-down"
-                                  }
-                                  color={"#637381"}
-                                  size={14}
-                                  style={{ marginRight: 10 }}
-                                />
-                              );
-                            }}
-                            dropdownIconPosition={"right"}
-                            buttonTextAfterSelection={(selectedItem, index) => {
-                              return (
-                                <View
-                                  style={{
-                                    justifyContent: "center",
-                                    alignContent: "center",
-                                    height: 50,
-                                  }}
-                                >
-                                  <Text
-                                    allowFontScaling={false}
-                                    style={styles.text}
-                                  >
-                                    {selectedItem?.label}
-                                  </Text>
-                                </View>
-                              );
-                            }}
-                            renderCustomizedRowChild={(item, index) => {
-                              return (
-                                <VerticalSelect
-                                  value={item.value}
-                                  label={item.label}
-                                  key={index}
-                                  selectedItem={dataInput.ID_Quy}
-                                />
-                              );
-                            }}
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                            scrollEventThrottle={16}
+                            scrollEnabled={true}
+                            onRefresh={fetchPhieuNX}
+                            refreshing={loading}
                           />
+                        </>
+                      ) : (
+                        <View style={styles.container}>
+                          <Image
+                            source={require("../../../assets/icons/ic_phieu.png")}
+                            resizeMode="contain"
+                            style={{ height: 120, width: 120 }}
+                          />
+                          <Text style={styles.textNo}>Không có phiếu nào cả</Text>
                         </View>
-                      </View>
-
-                      <View>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Mã số phiếu
-                        </Text>
-                        <TextInput
-                          allowFontScaling={false}
-                          value={dataInput.Sophieu}
-                          placeholder="Mã số phiếu"
-                          placeholderTextColor="gray"
-                          style={[
-                            styles.textInput,
-                            {
-                              paddingHorizontal: 10,
-                            },
-                          ]}
-                          onChangeText={(val) => {
-                            handleChangeText("Sophieu", val);
-                          }}
-                        />
-                      </View>
-
-                      <View>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Ghi chú
-                        </Text>
-                        <TextInput
-                          allowFontScaling={false}
-                          value={dataInput.Ghichu}
-                          placeholder="Ghi chú"
-                          placeholderTextColor="gray"
-                          textAlignVertical="top"
-                          multiline={true}
-                          blurOnSubmit={false}
-                          style={[
-                            styles.textInput,
-                            {
-                              paddingHorizontal: 10,
-                              height: 80,
-                            },
-                          ]}
-                          onChangeText={(text) => {
-                            handleChangeText("Ghichu", text);
-                          }}
-                        />
-                      </View>
-                      <View
-                        style={{
-                          justifyContent: "space-around",
-                          width: "100%",
-                          marginTop: 20,
-                        }}
-                      >
-                        <ButtonSubmit
-                          text={"Lưu"}
-                          width={"auto"}
-                          backgroundColor={COLORS.bg_active}
-                          color={"white"}
-                          isLoading={loadingSubmit}
-                          onPress={() => handlePushDataSave()}
-                        />
-                      </View>
-                    </View>
+                      )}
+                    </>
                   )}
                 </>
+              )}
+
+              {isCreate == true && (
+                <View style={{ margin: 20 }}>
+                  <View
+                    style={{
+                      justifyContent: "space-around",
+                      width: "100%",
+                    }}
+                  >
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Phòng ban dự án
+                    </Text>
+
+                    <SelectDropdown
+                      data={phongBanDA ? phongBanDA : []}
+                      buttonStyle={styles.select}
+                      dropdownStyle={{
+                        borderRadius: 8,
+                        maxHeight: 400,
+                      }}
+                      // rowStyle={{ height: adjust(50), justifyContent: "center" }}
+                      defaultButtonText={"Nơi nhập xuất"}
+                      buttonTextStyle={styles.customText}
+                      defaultValue={defaultPB}
+                      onSelect={(selectedItem, index) => {
+                        handleChangeText(
+                          "ID_Phongban",
+                          selectedItem.ID_Phongban
+                        );
+                      }}
+                      renderDropdownIcon={(isOpened) => {
+                        return (
+                          <FontAwesome
+                            name={isOpened ? "chevron-up" : "chevron-down"}
+                            color={"#637381"}
+                            size={14}
+                            style={{ marginRight: 10 }}
+                          />
+                        );
+                      }}
+                      dropdownIconPosition={"right"}
+                      buttonTextAfterSelection={(selectedItem, index) => {
+                        return (
+                          <View
+                            style={{
+                              justifyContent: "center",
+                              alignContent: "center",
+                              height: adjust(50),
+                            }}
+                          >
+                            <Text allowFontScaling={false} style={styles.text}>
+                              {selectedItem?.Tenphongban}
+                            </Text>
+                          </View>
+                        );
+                      }}
+                      renderCustomizedRowChild={(item, index) => {
+                        return (
+                          <VerticalSelect
+                            value={item.ID_Phongban}
+                            label={item.Tenphongban}
+                            key={index}
+                            selectedItem={phongBanDA}
+                          />
+                        );
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      width: "100%",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View style={{ width: "48%" }}>
+                      <Text allowFontScaling={false} style={styles.text}>
+                        Loại nhóm
+                      </Text>
+                      <SelectDropdown
+                        data={dataLoaiNhom ? dataLoaiNhom : []}
+                        buttonStyle={styles.select}
+                        dropdownStyle={{
+                          borderRadius: 8,
+                          maxHeight: 400,
+                        }}
+                        // rowStyle={{ height: 50, justifyContent: "center" }}
+                        defaultButtonText={"Chọn loại nhóm"}
+                        buttonTextStyle={styles.customText}
+                        defaultValue={defaultQuy}
+                        onSelect={(selectedItem, index) => {
+                          handleChangeText("ID_Loainhom", selectedItem.value);
+                          handleLoaiNhomSelect(selectedItem);
+                        }}
+                        renderDropdownIcon={(isOpened) => {
+                          return (
+                            <FontAwesome
+                              name={isOpened ? "chevron-up" : "chevron-down"}
+                              color={"#637381"}
+                              size={14}
+                              style={{ marginRight: 10 }}
+                            />
+                          );
+                        }}
+                        dropdownIconPosition={"right"}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                          return (
+                            <View
+                              style={{
+                                justifyContent: "center",
+                                alignContent: "center",
+                                height: 50,
+                              }}
+                            >
+                              <Text
+                                allowFontScaling={false}
+                                style={styles.text}
+                              >
+                                {selectedItem?.label}
+                              </Text>
+                            </View>
+                          );
+                        }}
+                        renderCustomizedRowChild={(item, index) => {
+                          return (
+                            <VerticalSelect
+                              value={item.value}
+                              label={item.label}
+                              key={index}
+                              selectedItem={dataInput.ID_Loainhom}
+                            />
+                          );
+                        }}
+                      />
+                    </View>
+                    <View style={{ width: "48%" }}>
+                      <Text allowFontScaling={false} style={styles.text}>
+                        Quý
+                      </Text>
+                      <SelectDropdown
+                        data={dataQuy ? dataQuy : []}
+                        buttonStyle={styles.select}
+                        dropdownStyle={{
+                          borderRadius: 8,
+                          maxHeight: 400,
+                        }}
+                        // rowStyle={{ height: 50, justifyContent: "center" }}
+                        defaultButtonText={"Chọn quý"}
+                        buttonTextStyle={styles.customText}
+                        defaultValue={defaultQuy}
+                        onSelect={(selectedItem, index) => {
+                          handleChangeText("ID_Quy", selectedItem.value);
+                        }}
+                        renderDropdownIcon={(isOpened) => {
+                          return (
+                            <FontAwesome
+                              name={isOpened ? "chevron-up" : "chevron-down"}
+                              color={"#637381"}
+                              size={14}
+                              style={{ marginRight: 10 }}
+                            />
+                          );
+                        }}
+                        dropdownIconPosition={"right"}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                          return (
+                            <View
+                              style={{
+                                justifyContent: "center",
+                                alignContent: "center",
+                                height: 50,
+                              }}
+                            >
+                              <Text
+                                allowFontScaling={false}
+                                style={styles.text}
+                              >
+                                {selectedItem?.label}
+                              </Text>
+                            </View>
+                          );
+                        }}
+                        renderCustomizedRowChild={(item, index) => {
+                          return (
+                            <VerticalSelect
+                              value={item.value}
+                              label={item.label}
+                              key={index}
+                              selectedItem={dataInput.ID_Quy}
+                            />
+                          );
+                        }}
+                      />
+                    </View>
+                  </View>
+                  <View style={{ width: "48%" }}>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Ngày nhập xuất
+                    </Text>
+                    <TouchableOpacity onPress={toggleDatePicker}>
+                      <View style={styles.action}>
+                        <TextInput
+                          allowFontScaling={false}
+                          value={dataInput.NgayNX}
+                          placeholder="Ngày nhập xuất"
+                          placeholderTextColor="gray"
+                          style={{
+                            paddingLeft: 12,
+                            color: "#05375a",
+                            width: "70%",
+                            fontSize: 16,
+                            height: 48,
+                          }}
+                          pointerEvents="none"
+                        />
+                        <TouchableOpacity
+                          onPress={toggleDatePicker}
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: 48,
+                            width: 48,
+                          }}
+                        >
+                          <AntDesign name="calendar" size={24} color="black" />
+                        </TouchableOpacity>
+                      </View>
+                      <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        isDarkModeEnabled={true}
+                        onConfirm={(date) => handleConfirm("NgayNX", date)}
+                        onCancel={toggleDatePicker}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Mã số phiếu
+                    </Text>
+                    <TextInput
+                      allowFontScaling={false}
+                      value={dataInput.Sophieu}
+                      placeholder="Mã số phiếu"
+                      placeholderTextColor="gray"
+                      style={[
+                        styles.textInput,
+                        {
+                          paddingHorizontal: 10,
+                        },
+                      ]}
+                      onChangeText={(val) => {
+                        handleChangeText("Sophieu", val);
+                      }}
+                    />
+                  </View>
+
+                  <View>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Ghi chú
+                    </Text>
+                    <TextInput
+                      allowFontScaling={false}
+                      value={dataInput.Ghichu}
+                      placeholder="Ghi chú"
+                      placeholderTextColor="gray"
+                      textAlignVertical="top"
+                      multiline={true}
+                      blurOnSubmit={false}
+                      style={[
+                        styles.textInput,
+                        {
+                          paddingHorizontal: 10,
+                          height: 80,
+                        },
+                      ]}
+                      onChangeText={(text) => {
+                        handleChangeText("Ghichu", text);
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      justifyContent: "space-around",
+                      width: "100%",
+                      marginTop: 20,
+                    }}
+                  >
+                    <ButtonSubmit
+                      text={"Lưu"}
+                      width={"auto"}
+                      backgroundColor={COLORS.bg_active}
+                      color={"white"}
+                      isLoading={loadingSubmit}
+                      onPress={() => handlePushDataSave()}
+                    />
+                  </View>
+                </View>
               )}
 
               {newActionQuanlyTaisan?.length > 0 && (
@@ -666,7 +771,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    backgroundColor: "red",
   },
   centeredView: {
     flex: 1,
@@ -734,6 +838,11 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 4,
   },
+  textNo: {
+    fontSize: 30, 
+    fontWeight: 'bold',
+    color: 'black', 
+  },
   textInput: {
     color: "#05375a",
     fontSize: adjust(15),
@@ -761,6 +870,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bg_active,
     width: 65,
     height: 65,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonPlus: {
+    backgroundColor: COLORS.bg_active,
+    width: adjust(65),
+    height: adjust(65),
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
