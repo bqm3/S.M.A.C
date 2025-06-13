@@ -84,7 +84,7 @@ const TabNavigation = () => {
                   Phiếu kiểm kê
                 </Text>
               ),
-              headerLeft: () => (
+              headerLeft: () =>
                 isCreate ? (
                   <Ionicons
                     onPress={() => {
@@ -94,7 +94,7 @@ const TabNavigation = () => {
                     size={24}
                     color="black"
                   />
-                ) : null
+                ) : null,
             })}
           />
           <Stack.Screen
@@ -117,6 +117,7 @@ const TabNavigation = () => {
                   Quản lý tài sản
                 </Text>
               ),
+            })}
           />
         </Stack.Group>
         <Stack.Group>

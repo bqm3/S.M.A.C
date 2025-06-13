@@ -405,7 +405,7 @@ const ScanScreen = ({ navigation }) => {
                           <Image
                             source={require("../../../assets/icons/ic_phieu.png")}
                             resizeMode="contain"
-                            style={{ height: 120, width: 120 }}
+                            style={{ height: 80, width: 80 }}
                           />
                           <Text style={styles.textNo}>Không có phiếu nào cả</Text>
                         </View>
@@ -839,7 +839,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   textNo: {
-    fontSize: 30, 
+    fontSize: 24, 
     fontWeight: 'bold',
     color: 'black', 
   },
